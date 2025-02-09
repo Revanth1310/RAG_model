@@ -1,0 +1,8 @@
+streamlit
+serpapi
+faiss-cpu
+google-generativeai
+sentence-transformer
+numpy
+serpapipillow
+requests
