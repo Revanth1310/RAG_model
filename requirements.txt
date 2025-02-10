@@ -4,6 +4,5 @@ faiss-cpu
 google-generativeai
 sentence-transformers
 numpy
-google-search-results
 pillow
 requests
