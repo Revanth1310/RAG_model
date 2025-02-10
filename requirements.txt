@@ -2,7 +2,7 @@ streamlit
 serpapi
 faiss-cpu
 google-generativeai
-sentence-transformer
+google-search-results
 numpy
 serpapi
 pillow
