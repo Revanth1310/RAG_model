@@ -10,11 +10,10 @@ import requests
 from io import BytesIO
 
 # Configure Gemini API
-GEMINI_API_KEY = "AIzaSyBcWys8yTQCTpesAgvxle7PDEwg6si-H0c"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Configure SerpAPI
-SERPAPI_KEY = "983858ca65811d41b677aa8e6f0e6a2e24b3fa34ecc4c9e2dff82bf139ab016d"
+
 
 # Load embedding model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
