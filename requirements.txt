@@ -2,8 +2,8 @@ streamlit
 serpapi
 faiss-cpu
 google-generativeai
-google-search-results
+sentence-transformers
 numpy
-serpapi
+google-search-results
 pillow
 requests
