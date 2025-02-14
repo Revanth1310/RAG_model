@@ -3,7 +3,7 @@ import faiss
 import numpy as np
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
-from google_search_results import GoogleSearch # For web search
+from serpapi import GoogleSearch # For web search
 from PIL import Image
 import requests
 from io import BytesIO
