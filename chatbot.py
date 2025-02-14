@@ -9,7 +9,7 @@ import requests
 from io import BytesIO
 
 # Configure Gemini API
-genai.configure(api_key=GEMINI_API_KEY)
+genai.configure(api_key=GOOGLE_GEMINI_API)
 
 # Configure SerpAPI
 
