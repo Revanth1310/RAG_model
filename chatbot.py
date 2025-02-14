@@ -3,16 +3,18 @@ import faiss
 import numpy as np
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
-from serpapi import GoogleSearch # For web search
+from serpapi import GoogleSearch  # For web search
 from PIL import Image
 import requests
 from io import BytesIO
+import time  # For streaming effect
 
 # Configure Gemini API
-genai.configure(api_key=GOOGLE_GEMINI_API)
+GEMINI_API_KEY = "AIzaSyBcWys8yTQCTpesAgvxle7PDEwg6si-H0c"
+genai.configure(api_key=GEMINI_API_KEY)
 
 # Configure SerpAPI
-
+SERPAPI_KEY = "983858ca65811d41b677aa8e6f0e6a2e24b3fa34ecc4c9e2dff82bf139ab016d"
 
 # Load embedding model
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -79,18 +81,25 @@ def search_web(query):
         return first_image_url
     return None
 
-# Function to generate response using Gemini API
+# Function to generate response using Gemini API with chat history
 def generate_response(query, retrieved_docs):
     context = "\n".join(retrieved_docs) if isinstance(retrieved_docs, list) else ""
     source = "Dataset" if context else "Web Search"
 
+    # Include last 3 messages from chat history for context
+    chat_history = "\n".join([f"User: {chat['query']}\nBot: {chat['response']}" for chat in st.session_state.chat_history[-3:]])
+
     prompt = f"""
-    You are an AI assistant specializing on school level syllabus. Answer the following query with step-by-step instructions.Give sugestions on different Related projects,mainly instead of giving direct result give the best approach to achieve that result
-    please avoide giving direct answers and can answer generall things like greetings sendoffs in a fromal and interative way
+    You are an AI assistant specializing in school-level syllabus. Answer the following query with step-by-step instructions.
+    - Instead of giving direct answers, provide the best approach to achieve the result.
+    - Maintain a formal and interactive tone for general queries (greetings, farewells).
+    - Refer to the previous conversation for context.
+
+    Previous Conversation:
+    {chat_history}
+
     Context ({source}):
     {context}
-
-    If the context does not fully answer the query, generate a detailed answer based on general knowledge.
 
     Question: {query}
     Answer:
@@ -100,6 +109,16 @@ def generate_response(query, retrieved_docs):
     response = model.generate_content(prompt)
 
     return response.text if response.text else "I couldn't find the exact steps, but you can try searching online."
+
+# Function to display response word by word
+def stream_response(response_text):
+    response_placeholder = st.empty()
+    full_response = ""
+
+    for word in response_text.split():
+        full_response += word + " "
+        response_placeholder.write(full_response)  # Stream each word
+        time.sleep(0.05)  # Delay for effect
 
 # User Input
 query = st.chat_input("Ask a question about art projects")
@@ -119,7 +138,8 @@ for chat in st.session_state.chat_history:
         st.markdown(f"**You:** {chat['query']}")
 
     with st.chat_message("assistant"):
-        st.markdown(f"**Bot:** {chat['response']}")
+        st.markdown(f"**Bot:**")
+        stream_response(chat["response"])  # Stream response word by word
 
         # Display image if available
         if chat["image"]:
@@ -128,4 +148,3 @@ for chat in st.session_state.chat_history:
                 st.image(img, caption="Relevant Image", width=300)  # Reduced width
             except Exception as e:
                 st.error("Could not load image.")
-
